@@ -1,32 +1,33 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import pickle
 
-model = pickle.load(open("model.pkl", "rb"))
+model = pickle.load(open("house_price_model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
-
-st.title("Indian House Price Prediction (Bangalore Dataset)")
+encoder = pickle.load(open("location_encoder.pkl", "rb"))
 
 df = pd.read_csv("cleaned_data.csv")
 
-sqft = st.number_input("Total Square Feet", min_value=200, max_value=5000, step=10)
-bath = st.number_input("Number of Bathrooms", min_value=1, max_value=10, step=1)
-bhk = st.number_input("Number of BHK", min_value=1, max_value=10, step=1)
+st.title("Bangalore House Price Prediction")
 
-locations = sorted(df["location"].unique())
-location = st.selectbox("Select Location", locations)
-
-input_data = pd.DataFrame([[sqft, bath, bhk, location]],
-                          columns=["total_sqft", "bath", "bhk", "location"])
-
-input_encoded = pd.get_dummies(input_data)
-train_encoded = pd.get_dummies(df.drop("price", axis=1))
-input_encoded = input_encoded.reindex(columns=train_encoded.columns, fill_value=0)
-
-num_cols = ["total_sqft", "bath", "bhk"]
-input_encoded[num_cols] = scaler.transform(input_encoded[num_cols])
+location_list = sorted(df["location"].unique())
+location = st.selectbox("Select Location", location_list)
+total_sqft = st.number_input("Enter Total Sqft", min_value=300, max_value=10000, value=1000)
+bhk = st.number_input("Enter BHK", min_value=1, max_value=10, value=2)
+bath = st.number_input("Enter Bathrooms", min_value=1, max_value=10, value=2)
 
 if st.button("Predict Price"):
-    result = model.predict(input_encoded)[0]
-    st.success(f"Estimated Price: ₹ {result * 100000:.2f}")
+    input_data = pd.DataFrame({
+        "location": [location],
+        "total_sqft": [total_sqft],
+        "BHK": [bhk],
+        "bath": [bath]
+    })
+
+    input_data["location"] = encoder.transform(input_data["location"])
+    num_cols = ["total_sqft", "BHK", "bath"]
+    input_data[num_cols] = scaler.transform(input_data[num_cols])
+
+    prediction = model.predict(input_data)[0]
+    st.success(f"Estimated Price: ₹ {prediction:.2f} Lakhs")
+
