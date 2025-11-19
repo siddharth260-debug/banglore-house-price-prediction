@@ -25,7 +25,7 @@ if st.button("Predict Price"):
 
     loc = input_data["location"][0]
     if loc not in le.classes_:
-        loc = "Other"  # Ensure 'Other' exists in your encoder classes
+        loc = "Other"
     input_data["location"] = le.transform([loc])
 
     num_cols = ["total_sqft", "BHK", "bath"]
@@ -33,3 +33,4 @@ if st.button("Predict Price"):
 
     prediction = model.predict(input_data)[0]
     st.success(f"Estimated Price: ₹ {prediction:.2f} Lakhs")
+
