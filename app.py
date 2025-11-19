@@ -1,13 +1,11 @@
-import streamlit as st
+
+  import streamlit as st
 import pandas as pd
 import pickle
 
 model = pickle.load(open("house_price_model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
 le = pickle.load(open("location_encoder.pkl", "rb"))
-df = pd.read_csv("cleaned_data.csv")   # or your correct cleaned CSV name
-
-
 df = pd.read_csv("cleaned_data.csv")
 
 st.title("Bangalore House Price Prediction")
@@ -26,10 +24,9 @@ if st.button("Predict Price"):
         "bath": [bath]
     })
 
-    input_data["location"] = encoder.transform(input_data["location"])
+    input_data["location"] = le.transform(input_data[["location"]])
     num_cols = ["total_sqft", "BHK", "bath"]
     input_data[num_cols] = scaler.transform(input_data[num_cols])
 
     prediction = model.predict(input_data)[0]
     st.success(f"Estimated Price: ₹ {prediction:.2f} Lakhs")
-
