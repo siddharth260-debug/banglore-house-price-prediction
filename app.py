@@ -4,7 +4,9 @@ import pickle
 
 model = pickle.load(open("house_price_model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
-encoder = pickle.load(open("location_encoder.pkl", "rb"))
+le = pickle.load(open("location_encoder.pkl", "rb"))
+df = pd.read_csv("cleaned_data.csv")   # or your correct cleaned CSV name
+
 
 df = pd.read_csv("cleaned_data.csv")
 
