@@ -9,21 +9,23 @@ df = pd.read_csv("cleaned_data.csv")
 
 st.title("Bangalore House Price Prediction")
 
-location_list = sorted(le.classes_)  # Only allow locations in the encoder
+location_list = sorted(df["location"].unique())
 location = st.selectbox("Select Location", location_list)
 total_sqft = st.number_input("Enter Total Sqft", min_value=300, max_value=10000, value=1000)
 bhk = st.number_input("Enter BHK", min_value=1, max_value=10, value=2)
 bath = st.number_input("Enter Bathrooms", min_value=1, max_value=10, value=2)
 
+location_map = {loc: idx for idx, loc in enumerate(le.classes_)}
+
 if st.button("Predict Price"):
+    loc_encoded = location_map.get(location, -1)
     input_data = pd.DataFrame({
-        "location": [location],
+        "location": [loc_encoded],
         "total_sqft": [total_sqft],
         "BHK": [bhk],
         "bath": [bath]
     })
 
-    input_data["location"] = le.transform([location])
     num_cols = ["total_sqft", "BHK", "bath"]
     input_data[num_cols] = scaler.transform(input_data[num_cols])
 
