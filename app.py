@@ -23,7 +23,11 @@ if st.button("Predict Price"):
         "bath": [bath]
     })
 
-    input_data["location"] = le.transform(input_data[["location"]])
+    loc = input_data["location"][0]
+    if loc not in le.classes_:
+        loc = "Other"  # Ensure 'Other' exists in your encoder classes
+    input_data["location"] = le.transform([loc])
+
     num_cols = ["total_sqft", "BHK", "bath"]
     input_data[num_cols] = scaler.transform(input_data[num_cols])
 
