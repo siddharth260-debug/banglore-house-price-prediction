@@ -9,7 +9,7 @@ df = pd.read_csv("cleaned_data.csv")
 
 st.title("Bangalore House Price Prediction")
 
-location_list = sorted(df["location"].unique())
+location_list = sorted(le.classes_)  # Only allow locations in the encoder
 location = st.selectbox("Select Location", location_list)
 total_sqft = st.number_input("Enter Total Sqft", min_value=300, max_value=10000, value=1000)
 bhk = st.number_input("Enter BHK", min_value=1, max_value=10, value=2)
@@ -29,4 +29,3 @@ if st.button("Predict Price"):
 
     prediction = model.predict(input_data)[0]
     st.success(f"Estimated Price: ₹ {prediction:.2f} Lakhs")
-
