@@ -8,7 +8,7 @@ scaler = pickle.load(open("scaler.pkl", "rb"))
 
 st.title("Indian House Price Prediction (Bangalore Dataset)")
 
-df = pd.read_csv("Final_df.csv")
+df = pd.read_csv("cleaned_data.csv")
 
 sqft = st.number_input("Total Square Feet", min_value=200, max_value=5000, step=10)
 bath = st.number_input("Number of Bathrooms", min_value=1, max_value=10, step=1)
